@@ -1,0 +1,5 @@
+flowchart TD
+    A[User types a new note and clicks submit] -->|Disable default GET request| B[The event handler in the spa.js file changes the current notes list]
+    B --> C[The notes list is re-rendered on the same page]
+    C --> D[Browser sends a POST request to the server with details of the new note]
+    D --> E[Server responds with a 201 status code]
