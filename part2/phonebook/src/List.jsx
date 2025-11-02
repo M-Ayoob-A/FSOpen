@@ -3,7 +3,6 @@ import services from './services/persons'
 const List = ({ persons, searchTerm, setPersons }) => {
 
   const deletePerson = person => {
-    console.log(person)
     if (window.confirm(`Delete ${person.name}?`)) {
       services.deleteEntry(person.id)
       setPersons(persons.filter(p => p.name !== person.name))

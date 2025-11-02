@@ -1,5 +1,4 @@
 import { useState } from "react"
-import axios from 'axios'
 import services from './services/persons'
 
 const Form = ({ persons, setPersons }) => {
@@ -9,8 +8,11 @@ const Form = ({ persons, setPersons }) => {
 
   const onFormSubmit = (event) => {
     event.preventDefault()
-    if (persons.some(p => p.name === newName)) {
-      alert(`${newName} is already added to phonebook`);
+    if (persons.some(p => p.name === newName) 
+      && window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
+      const foundPerson = persons.find(p => p.name === newName)
+      const changedPerson = { ...foundPerson, 'number' : newPhoneNumber }
+      services.change(changedPerson.id, changedPerson)
     } else {
       const newPerson = { 'name' : newName, 'number' : newPhoneNumber }
       setPersons(persons.concat(newPerson))
