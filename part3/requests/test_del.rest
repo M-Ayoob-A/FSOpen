@@ -1,11 +1,19 @@
-POST http://localhost:3001/api/persons
+POST https://fsopen-backend-part3b.onrender.com/api/persons
 content-type: application/json
 
 {
     "name": "Aro Helas",
-    "number": "387562-34983"
+    "number": "387562-34983",
+    "id": "58752"
 }
 
 ###
-GET http://localhost:3001/api/persons
-
+GET https://fsopen-backend-part3b.onrender.com/api/persons
+###
+GET https://fsopen-backend-part3b.onrender.com/api/persons/1
+###
+GET https://fsopen-backend-part3b.onrender.com/api/persons/649600
+###
+DELETE https://fsopen-backend-part3b.onrender.com/api/persons/1
+###
+GET https://fsopen-backend-part3b.onrender.com/info

@@ -14,15 +14,15 @@ const Form = ({ persons, setPersons, setNotifMessage, setNotifColour }) => {
       const changedPerson = { ...foundPerson, 'number' : newPhoneNumber }
       services.change(changedPerson.id, changedPerson).then(res => {
         setNotifColour('green')
-        setNotifMessage(`Updated ${res.data.name}'s number`)
+        setNotifMessage(`Updated ${newName}'s number`)
         setTimeout(() => {
           setNotifMessage(null)
         }, 5000)
       })
     } else {
       const newPerson = { 'name' : newName, 'number' : newPhoneNumber }
-      setPersons(persons.concat(newPerson))
       services.create(newPerson).then(res => {
+        setPersons(persons.concat(res.data))
         setNotifColour('green')
         setNotifMessage(`Added ${res.data.name}`)
         setTimeout(() => {

@@ -13,7 +13,7 @@ const App = () => {
 
   useEffect(() => {
     services.getAll().then(data => setPersons(data))
-  }, [persons])
+  }, [])
 
   return (
     <div>
