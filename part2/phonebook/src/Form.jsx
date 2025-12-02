@@ -13,6 +13,13 @@ const Form = ({ persons, setPersons, setNotifMessage, setNotifColour }) => {
       const foundPerson = persons.find(p => p.name === newName)
       const changedPerson = { ...foundPerson, 'number' : newPhoneNumber }
       services.change(changedPerson.id, changedPerson).then(res => {
+        setPersons(persons.map(p => {
+          if (p.name === res.data.name) {
+            return { ...p, 'number' : res.data.number };
+          } else {
+            return p
+          }
+        }))
         setNotifColour('green')
         setNotifMessage(`Updated ${newName}'s number`)
         setTimeout(() => {
