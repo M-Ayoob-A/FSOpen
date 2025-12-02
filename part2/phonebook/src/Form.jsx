@@ -36,6 +36,13 @@ const Form = ({ persons, setPersons, setNotifMessage, setNotifColour }) => {
           setNotifMessage(null)
         }, 5000)
       })
+      .catch(err => {
+        setNotifColour('red')
+        setNotifMessage(err.response.data.error)
+        setTimeout(() => {
+          setNotifMessage(null)
+        }, 5000)
+      })
     }
   }
   
