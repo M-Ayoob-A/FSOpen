@@ -1,0 +1,34 @@
+POST http://localhost:3003/api/blogs
+content-type: application/json
+
+{
+    "title": "JK",
+    "author": "JHIK J",
+    "url": "www.jklfjdkf.com",
+    "likes": 20
+}
+
+###
+POST http://localhost:3003/api/blogs
+content-type: application/json
+
+{
+    "title": "Cool Blog",
+    "author": "Collin Cold",
+    "url": "www.coolblog.com",
+    "likes": 23
+}
+
+###
+POST http://localhost:3003/api/blogs
+content-type: application/json
+
+{
+    "title": "Frisey",
+    "author": "Freight",
+    "url": "www.frisey.com",
+    "likes": 23
+}
+
+###
+GET http://localhost:3003/api/blogs
