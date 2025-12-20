@@ -64,6 +64,32 @@ test('correct number of blogs returned, in json format', async () => {
   assert.strictEqual(response.body.length, 2)
 })
 
+test('identifier key is "id"', async () => {
+  const response = await api
+                          .get('/api/blogs')
+                          .expect(200)
+                          .expect('Content-Type', /application\/json/)
+  
+  assert(response.body[0]['id'])
+})
+
+test('POST request creates a new blog post', async () => {
+  await api.post('/api/blogs')
+          .send(initialBlogs[2])    
+          .expect(201)
+          .expect('Content-Type', /application\/json/)
+
+  const response = await api.get('/api/blogs')
+                            .expect(200)
+                            .expect('Content-Type', /application\/json/)
+    
+  assert.strictEqual(response.body.length, 3)
+
+  const urls = response.body.map(blog => blog.url)
+
+  assert(urls.includes(initialBlogs[2].url))
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
