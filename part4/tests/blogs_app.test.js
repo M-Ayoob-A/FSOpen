@@ -90,6 +90,51 @@ test('POST request creates a new blog post', async () => {
   assert(urls.includes(initialBlogs[2].url))
 })
 
+test('New blog post defaults to 0 likes', async () => {
+  const newBlog = {
+    title: "Beyblade",
+    author: "Gi Ji",
+    url: "http://hypertop.com.au"
+  }
+  
+  await api.post('/api/blogs')
+          .send(newBlog)    
+          .expect(201)
+          .expect('Content-Type', /application\/json/)
+
+  const response = await api.get('/api/blogs')
+                            .expect(200)
+                            .expect('Content-Type', /application\/json/)
+    
+  assert.strictEqual(response.body.length, 3)
+
+  const newlyCreatedBlog = response.body.filter(blog => blog.url === newBlog.url)
+
+  assert(newlyCreatedBlog[0]['likes'] === 0)
+})
+
+test('Title and url required', async () => {
+  const missingTitle = {
+    author: "Gi Ji",
+    url: "http://hypertop.com.au",
+    likes: 45
+  }
+
+  const missingUrl = {
+    title: "Beyblade",
+    author: "Gi Ji",
+    likes: 45
+  }
+  
+  await api.post('/api/blogs')
+          .send(missingTitle)    
+          .expect(400)
+
+  await api.post('/api/blogs')
+          .send(missingUrl)    
+          .expect(400)
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
