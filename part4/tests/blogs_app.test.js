@@ -4,7 +4,7 @@ const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
 const Blog = require('../models/blog')
-const { before } = require('lodash')
+const { before, initial } = require('lodash')
 
 const api = supertest(app)
 
@@ -49,10 +49,7 @@ const initialBlogs = [
 
 beforeEach(async () => {
   await Blog.deleteMany({})
-  let blogObject = new Blog(initialBlogs[0])
-  await blogObject.save()
-  blogObject = new Blog(initialBlogs[1])
-  await blogObject.save()
+  await Blog.insertMany(initialBlogs)
 })
 
 test('correct number of blogs returned, in json format', async () => {
@@ -61,7 +58,7 @@ test('correct number of blogs returned, in json format', async () => {
                           .expect(200)
                           .expect('Content-Type', /application\/json/)
     
-  assert.strictEqual(response.body.length, 2)
+  assert.strictEqual(response.body.length, initialBlogs.length)
 })
 
 test('identifier key is "id"', async () => {
@@ -74,8 +71,15 @@ test('identifier key is "id"', async () => {
 })
 
 test('POST request creates a new blog post', async () => {
+  const newBlog = {
+    title: "Beyblade",
+    author: "Gi Ji",
+    url: "http://hypertop.com.au",
+    likes: 68
+  }
+  
   await api.post('/api/blogs')
-          .send(initialBlogs[2])    
+          .send(newBlog)    
           .expect(201)
           .expect('Content-Type', /application\/json/)
 
@@ -83,11 +87,11 @@ test('POST request creates a new blog post', async () => {
                             .expect(200)
                             .expect('Content-Type', /application\/json/)
     
-  assert.strictEqual(response.body.length, 3)
+  assert.strictEqual(response.body.length, initialBlogs.length + 1)
 
   const urls = response.body.map(blog => blog.url)
 
-  assert(urls.includes(initialBlogs[2].url))
+  assert(urls.includes(newBlog.url))
 })
 
 test('New blog post defaults to 0 likes', async () => {
@@ -106,7 +110,7 @@ test('New blog post defaults to 0 likes', async () => {
                             .expect(200)
                             .expect('Content-Type', /application\/json/)
     
-  assert.strictEqual(response.body.length, 3)
+  assert.strictEqual(response.body.length, initialBlogs.length + 1)
 
   const newlyCreatedBlog = response.body.filter(blog => blog.url === newBlog.url)
 
@@ -133,6 +137,38 @@ test('Title and url required', async () => {
   await api.post('/api/blogs')
           .send(missingUrl)    
           .expect(400)
+})
+
+test('Deletion works', async () => {
+  const newBlog = {
+    title: "Beyblade",
+    author: "Gi Ji",
+    url: "http://hypertop.com.au",
+    likes: 78
+  }
+  
+  await api.post('/api/blogs')
+          .send(newBlog)    
+          .expect(201)
+          .expect('Content-Type', /application\/json/)
+
+  const response = await api.get('/api/blogs')
+                            .expect(200)
+                            .expect('Content-Type', /application\/json/)
+  
+  assert.strictEqual(response.body.length, initialBlogs.length + 1)
+
+  const newlyCreatedBlog = response.body.filter(blog => blog.url === newBlog.url)[0]
+
+  await api.delete(`/api/blogs/${newlyCreatedBlog["id"]}`)
+          .expect(204)
+
+  const response2 = await api.get('/api/blogs')
+                            .expect(200)
+                            .expect('Content-Type', /application\/json/)
+    
+  assert.strictEqual(response2.body.length, initialBlogs.length)
+  assert.strictEqual(response2.body.filter(blog => blog.url === newBlog.url).length, 0)
 })
 
 after(async () => {
