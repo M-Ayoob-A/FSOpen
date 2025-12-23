@@ -53,19 +53,17 @@ beforeEach(async () => {
 })
 
 test('correct number of blogs returned, in json format', async () => {
-  const response = await api
-                          .get('/api/blogs')
-                          .expect(200)
-                          .expect('Content-Type', /application\/json/)
+  const response = await api.get('/api/blogs')
+                            .expect(200)
+                            .expect('Content-Type', /application\/json/)
     
   assert.strictEqual(response.body.length, initialBlogs.length)
 })
 
 test('identifier key is "id"', async () => {
-  const response = await api
-                          .get('/api/blogs')
-                          .expect(200)
-                          .expect('Content-Type', /application\/json/)
+  const response = await api.get('/api/blogs')
+                            .expect(200)
+                            .expect('Content-Type', /application\/json/)
   
   assert(response.body[0]['id'])
 })
@@ -83,9 +81,7 @@ test('POST request creates a new blog post', async () => {
           .expect(201)
           .expect('Content-Type', /application\/json/)
 
-  const response = await api.get('/api/blogs')
-                            .expect(200)
-                            .expect('Content-Type', /application\/json/)
+  const response = await api.get('/api/blogs').expect(200)
     
   assert.strictEqual(response.body.length, initialBlogs.length + 1)
 
@@ -101,14 +97,9 @@ test('New blog post defaults to 0 likes', async () => {
     url: "http://hypertop.com.au"
   }
   
-  await api.post('/api/blogs')
-          .send(newBlog)    
-          .expect(201)
-          .expect('Content-Type', /application\/json/)
+  await api.post('/api/blogs').send(newBlog).expect(201)
 
-  const response = await api.get('/api/blogs')
-                            .expect(200)
-                            .expect('Content-Type', /application\/json/)
+  const response = await api.get('/api/blogs').expect(200)
     
   assert.strictEqual(response.body.length, initialBlogs.length + 1)
 
@@ -130,13 +121,9 @@ test('Title and url required', async () => {
     likes: 45
   }
   
-  await api.post('/api/blogs')
-          .send(missingTitle)    
-          .expect(400)
+  await api.post('/api/blogs').send(missingTitle).expect(400)
 
-  await api.post('/api/blogs')
-          .send(missingUrl)    
-          .expect(400)
+  await api.post('/api/blogs').send(missingUrl).expect(400)
 })
 
 test('Deletion works', async () => {
@@ -147,28 +134,41 @@ test('Deletion works', async () => {
     likes: 78
   }
   
-  await api.post('/api/blogs')
-          .send(newBlog)    
-          .expect(201)
-          .expect('Content-Type', /application\/json/)
+  await api.post('/api/blogs').send(newBlog).expect(201)
 
-  const response = await api.get('/api/blogs')
-                            .expect(200)
-                            .expect('Content-Type', /application\/json/)
+  const response = await api.get('/api/blogs').expect(200)
   
   assert.strictEqual(response.body.length, initialBlogs.length + 1)
 
   const newlyCreatedBlog = response.body.filter(blog => blog.url === newBlog.url)[0]
 
-  await api.delete(`/api/blogs/${newlyCreatedBlog["id"]}`)
-          .expect(204)
+  await api.delete(`/api/blogs/${newlyCreatedBlog["id"]}`).expect(204)
 
-  const response2 = await api.get('/api/blogs')
-                            .expect(200)
-                            .expect('Content-Type', /application\/json/)
+  const response2 = await api.get('/api/blogs').expect(200)
     
   assert.strictEqual(response2.body.length, initialBlogs.length)
   assert.strictEqual(response2.body.filter(blog => blog.url === newBlog.url).length, 0)
+})
+
+
+test('Update works', async () => {
+  const response = await api.get('/api/blogs').expect(200)
+
+  const randomBlogFromDB = response.body[0]
+
+  const updatedBlog = {
+    title: "Beyblade",
+    author: randomBlogFromDB["author"],
+    url: randomBlogFromDB["url"] + '.mozilla',
+    likes: randomBlogFromDB["likes"] + 43,
+    id: randomBlogFromDB["id"]
+  }
+
+  await api.put(`/api/blogs/${randomBlogFromDB["id"]}`).send(updatedBlog).expect(200)
+
+  const response2 = await api.get('/api/blogs').expect(200)
+  const checkUpdatedBlog = response2.body.filter(blog => blog.id === randomBlogFromDB.id)[0]
+  assert.deepStrictEqual(checkUpdatedBlog, updatedBlog)
 })
 
 after(async () => {
