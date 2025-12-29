@@ -31,4 +31,27 @@ content-type: application/json
 }
 
 ###
+POST http://localhost:3003/api/users
+content-type: application/json
+
+{
+    "username": "ken",
+    "name": "ji",
+    "password": "nek"
+}
+
+###
+POST http://localhost:3003/api/users
+content-type: application/json
+
+{
+    "username": "henry",
+    "name": "hiimhenry",
+    "password": "henrypass"
+}
+
+###
 GET http://localhost:3003/api/blogs
+
+###
+GET http://localhost:3003/api/users
