@@ -1,6 +1,6 @@
 POST http://localhost:3003/api/blogs
 content-type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImtlbiIsImlkIjoiNjk1MzViZDk0YWFlYzYzOTg1ZWE0YjdiIiwiaWF0IjoxNzY3MDcwNzMwfQ.CzVf_jFmspxs-K7U436g_5p1MK9b5kH3t1xTYBzFOt8
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImtlbiIsImlkIjoiNjk1MzViZDk0YWFlYzYzOTg1ZWE0YjdiIiwiaWF0IjoxNzY3MDcxNDQ5fQ.2JMW8xjSs2pjl2eWrpizkxkRw9DuR-e0jkrMqHD89_k
 
 {
     "title": "JK",
@@ -12,7 +12,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Imtlb
 ###
 POST http://localhost:3003/api/blogs
 content-type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImtlbiIsImlkIjoiNjk1MzViZDk0YWFlYzYzOTg1ZWE0YjdiIiwiaWF0IjoxNzY3MDcwNzMwfQ.CzVf_jFmspxs-K7U436g_5p1MK9b5kH3t1xTYBzFOt8
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImtlbiIsImlkIjoiNjk1MzViZDk0YWFlYzYzOTg1ZWE0YjdiIiwiaWF0IjoxNzY3MDcxNDQ5fQ.2JMW8xjSs2pjl2eWrpizkxkRw9DuR-e0jkrMqHD89_k
 
 {
     "title": "Cool Blog",
@@ -24,7 +24,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Imtlb
 ###
 POST http://localhost:3003/api/blogs
 content-type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImhlbnJ5IiwiaWQiOiI2OTUzNWJlMTRhYWVjNjM5ODVlYTRiN2QiLCJpYXQiOjE3NjcwNzA4MTB9.x8XpLW8cvknbX6BG_pRtMyzOOtkmsLDUUe1mccYvf1M
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImtlbiIsImlkIjoiNjk1NGEyNTIxZTg4ZGFiMTBlNTJlMjZlIiwiaWF0IjoxNzY3MTU0MjcxfQ.9b7lhh_84loPvMuZM0Mu7zXDzHGq_UMUBBCrZiouSxc
 
 {
     "title": "Frisey",
@@ -32,6 +32,11 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Imhlb
     "url": "www.frisey.com",
     "likes": 23
 }
+###
+
+DELETE http://localhost:3003/api/blogs/6954a2bd5f64cc12a53a922d
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImtlbiIsImlkIjoiNjk1NGEyNTIxZTg4ZGFiMTBlNTJlMjZlIiwiaWF0IjoxNzY3MTU0MjcxfQ.9b7lhh_84loPvMuZM0Mu7zXDzHGq_UMUBBCrZiouSxc
 
 ###
 GET http://localhost:3003/api/blogs

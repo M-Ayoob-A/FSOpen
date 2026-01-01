@@ -3,6 +3,7 @@ const assert = require('node:assert')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 const app = require('../app')
 const Blog = require('../models/blog')
 const User = require('../models/user')
@@ -50,10 +51,23 @@ const initialBlogs = [
   }  
 ]
 
+const firstUser = {
+    username: "kenneth",
+    password: "nekbfkjsd"
+}
+const saltRounds = 10
+
 describe('when there is initially one user in db', () => {
   beforeEach(async () => {
     await Blog.deleteMany({})
+    await User.deleteMany({})
     await Blog.insertMany(initialBlogs)
+    await User.insertOne({
+      username: firstUser.username,
+      name: "usersname",
+      passwordHash: await bcrypt.hash(firstUser.password, saltRounds), // nek
+      blogs: []
+    })
   })
 
   test('correct number of blogs returned, in json format', async () => {
@@ -73,15 +87,23 @@ describe('when there is initially one user in db', () => {
   })
 
   test('POST request creates a new blog post', async () => {
+    
+    const loginRes = await api.post('/api/login')
+                              .send(firstUser)
+                              .expect(200)
+    
     const newBlog = {
       title: "Beyblade",
       author: "Gi Ji",
       url: "http://hypertop.com.au",
       likes: 68
     }
-    
+
+    const authString = 'Bearer ' + loginRes.body.token
+
     await api.post('/api/blogs')
-            .send(newBlog)    
+            .set('Authorization', authString)
+            .send(newBlog)
             .expect(201)
             .expect('Content-Type', /application\/json/)
 
@@ -95,14 +117,20 @@ describe('when there is initially one user in db', () => {
   })
 
   test('New blog post defaults to 0 likes', async () => {
+    const loginRes = await api.post('/api/login')
+                          .send(firstUser)
+                          .expect(200)
+    
     const newBlog = {
       title: "Beyblade",
       author: "Gi Ji",
       url: "http://hypertop.com.au"
     }
-    
-    await api.post('/api/blogs').send(newBlog).expect(201)
 
+    const authString = 'Bearer ' + loginRes.body.token
+    
+    await api.post('/api/blogs').set('Authorization', authString).send(newBlog).expect(201)
+    
     const response = await api.get('/api/blogs').expect(200)
       
     assert.strictEqual(response.body.length, initialBlogs.length + 1)
@@ -113,6 +141,12 @@ describe('when there is initially one user in db', () => {
   })
 
   test('Title and url required', async () => {
+    const loginRes = await api.post('/api/login')
+                              .send(firstUser)
+                              .expect(200)
+
+    const authString = 'Bearer ' + loginRes.body.token
+    
     const missingTitle = {
       author: "Gi Ji",
       url: "http://hypertop.com.au",
@@ -125,12 +159,18 @@ describe('when there is initially one user in db', () => {
       likes: 45
     }
     
-    await api.post('/api/blogs').send(missingTitle).expect(400)
+    await api.post('/api/blogs').set('Authorization', authString).send(missingTitle).expect(400)
 
-    await api.post('/api/blogs').send(missingUrl).expect(400)
+    await api.post('/api/blogs').set('Authorization', authString).send(missingUrl).expect(400)
   })
 
   test('Deletion works', async () => {
+    const loginRes = await api.post('/api/login')
+                              .send(firstUser)
+                              .expect(200)
+
+    const authString = 'Bearer ' + loginRes.body.token
+
     const newBlog = {
       title: "Beyblade",
       author: "Gi Ji",
@@ -138,7 +178,7 @@ describe('when there is initially one user in db', () => {
       likes: 78
     }
     
-    await api.post('/api/blogs').send(newBlog).expect(201)
+    await api.post('/api/blogs').set('Authorization', authString).send(newBlog).expect(201)
 
     const response = await api.get('/api/blogs').expect(200)
     
@@ -146,7 +186,7 @@ describe('when there is initially one user in db', () => {
 
     const newlyCreatedBlog = response.body.filter(blog => blog.url === newBlog.url)[0]
 
-    await api.delete(`/api/blogs/${newlyCreatedBlog["id"]}`).expect(204)
+    await api.delete(`/api/blogs/${newlyCreatedBlog["id"]}`).set('Authorization', authString).expect(204)
 
     const response2 = await api.get('/api/blogs').expect(200)
       
@@ -173,6 +213,30 @@ describe('when there is initially one user in db', () => {
     const response2 = await api.get('/api/blogs').expect(200)
     const checkUpdatedBlog = response2.body.filter(blog => blog.id === randomBlogFromDB.id)[0]
     assert.deepStrictEqual(checkUpdatedBlog, updatedBlog)
+  })
+
+  test('Update works', async () => {
+    const loginRes = await api.post('/api/login')
+                              .send(firstUser)
+                              .expect(200)
+
+    const authString = 'Bearer ' + loginRes.body.token
+    const incorrectAuthString = 'Bearer ' + loginRes.body.token + 'h'
+
+    const newBlog = {
+      title: "Beyblade",
+      author: "Gi Ji",
+      url: "http://hypertop.com.au",
+      likes: 78
+    }
+
+    await api.post('/api/blogs').send(newBlog).expect(401) // no token
+    await api.post('/api/blogs').set('Authorization', incorrectAuthString).send(newBlog).expect(401) //wrong token
+    await api.post('/api/blogs').set('Authorization', authString).send(newBlog).expect(201)
+
+    const response = await api.get('/api/blogs').expect(200)
+    
+    assert.strictEqual(response.body.length, initialBlogs.length + 1)
   })
 })
 
@@ -256,7 +320,7 @@ describe('when there is initially one user in db', () => {
     assert(initUser.id)
   })
 
-  test.only('short usernames/passwords dont get through', async () => {
+  test('short usernames/passwords dont get through', async () => {
     
     const usersAtStart = await helper.usersInDb()
 
