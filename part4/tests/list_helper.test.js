@@ -112,3 +112,12 @@ describe('most blogs', () => {
     }))
   })
 })
+
+describe('most likes', () => {
+  test('of the given list is Edsger', () => {
+    assert(_.isEqual(listHelper.mostLikes(blogs), {
+      author: "Edsger W. Dijkstra",
+      likes: 17
+    }))
+  })
+})
