@@ -1,5 +1,6 @@
 const express = require('express')
 const mongoose = require('mongoose')
+//const cors = require('cors')
 const config = require('./utils/config')
 const logger = require('./utils/logger')
 const middleware = require('./utils/middleware')
@@ -22,6 +23,7 @@ mongoose
 
 app.use(express.static('dist'))
 app.use(express.json())
+//app.use(cors())
 app.use(middleware.requestLogger)
 app.use(middleware.tokenExtractor)
 

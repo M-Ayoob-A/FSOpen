@@ -1,6 +1,6 @@
 POST http://localhost:3003/api/blogs
 content-type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImtlbiIsImlkIjoiNjk1MzViZDk0YWFlYzYzOTg1ZWE0YjdiIiwiaWF0IjoxNzY3MDcxNDQ5fQ.2JMW8xjSs2pjl2eWrpizkxkRw9DuR-e0jkrMqHD89_k
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImtlbiIsImlkIjoiNjk1NGEyNTIxZTg4ZGFiMTBlNTJlMjZlIiwiaWF0IjoxNzY3MzMzMTk2fQ.-imSnLcVi8xpUqx1ZK5IuB-_VN_PRPjtpF1fG-xOx1Y
 
 {
     "title": "JK",
@@ -12,7 +12,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Imtlb
 ###
 POST http://localhost:3003/api/blogs
 content-type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImtlbiIsImlkIjoiNjk1MzViZDk0YWFlYzYzOTg1ZWE0YjdiIiwiaWF0IjoxNzY3MDcxNDQ5fQ.2JMW8xjSs2pjl2eWrpizkxkRw9DuR-e0jkrMqHD89_k
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImtlbiIsImlkIjoiNjk1NGEyNTIxZTg4ZGFiMTBlNTJlMjZlIiwiaWF0IjoxNzY3MzMzMTk2fQ.-imSnLcVi8xpUqx1ZK5IuB-_VN_PRPjtpF1fG-xOx1Y
 
 {
     "title": "Cool Blog",

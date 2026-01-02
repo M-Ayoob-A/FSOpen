@@ -7,6 +7,42 @@ const App = () => {
   const [blogs, setBlogs] = useState([])
   
   /////////////////////////////// LOGIN THINGS
+  const [username, setUsername] = useState('') 
+  const [password, setPassword] = useState('')
+  const [user, setUser] = useState(null)
+
+  const handleLogin = async (event) => {
+    event.preventDefault()
+    console.log('logging in with', username, password)
+    try {
+      const user = await loginService.login({ username, password })
+      window.localStorage.setItem('blogsAppUser', JSON.stringify(user)) 
+      setUser(user)
+      setUsername('')
+      setPassword('')
+    } catch {
+      /*setErrorMessage('wrong credentials')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)*/
+      console.log('login error')
+    }
+  }
+
+  const handleLogOut = async () => {
+    console.log('logging out', username, password)
+    window.localStorage.removeItem('blogsAppUser')
+    setUser(null)
+  }
+
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('blogsAppUser')
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON)
+      setUser(user)
+      //blogService.setToken(user.token)
+    }
+  }, [])
 
   const loginForm = () => (
     <>
@@ -36,24 +72,7 @@ const App = () => {
       </form>
     </>
   )
-  const [username, setUsername] = useState('') 
-  const [password, setPassword] = useState('')
-  const [user, setUser] = useState(null)
-  const handleLogin = async (event) => {
-    event.preventDefault()
-    console.log('logging in with', username, password)
-    try {
-      const user = await loginService.login({ username, password })
-      setUser(user)
-      setUsername('')
-      setPassword('')
-    } catch {
-      setErrorMessage('wrong credentials')
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
-    }
-  }
+
   /////////////////////////////// LOGIN THINGS
 
   const blogList = () => (
@@ -77,6 +96,7 @@ const App = () => {
       {user && (
         <div>
           <p>{user.name} logged in</p>
+          <button onClick={handleLogOut}>logout</button>
           {blogList()}
         </div>
       )}
