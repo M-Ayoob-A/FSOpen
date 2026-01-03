@@ -2,40 +2,23 @@ import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import Notif from './components/Notif'
 import Error from './components/Error'
+import LoginForm from './components/LoginForm'
+import CreateBlogForm from './components/CreateBlogForm'
 import blogService from './services/blogs'
-import loginService from './services/login'
 
 const App = () => {
   
   const [notifMessage, setNotifMessage] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
   const [blogs, setBlogs] = useState([])
+
+  const [user, setUser] = useState(null)
   
   /////////////////////////////// LOGIN THINGS
-  const [username, setUsername] = useState('') 
-  const [password, setPassword] = useState('')
-  const [user, setUser] = useState(null)
-
-  const handleLogin = async (event) => {
-    event.preventDefault()
-    console.log('logging in with', username, password)
-    try {
-      const user = await loginService.login({ username, password })
-      window.localStorage.setItem('blogsAppUser', JSON.stringify(user)) 
-      setUser(user)
-      setUsername('')
-      setPassword('')
-    } catch {
-      setErrorMessage('wrong username or password')
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
-    }
-  }
+  
 
   const handleLogOut = async (event) => {
     event.preventDefault()
-    console.log('logging out', username, password)
     window.localStorage.removeItem('blogsAppUser')
     setUser(null)
   }
@@ -49,37 +32,8 @@ const App = () => {
     }
   }, [])
 
-  const loginForm = () => (
-    <>
-      <h2>Login</h2>
-      <form onSubmit={handleLogin}>
-        <div>
-          <label>
-            username
-            <input
-              type="text"
-              value={username}
-              onChange={({ target }) => setUsername(target.value)}
-            />
-          </label>
-        </div>
-        <div>
-          <label>
-            password
-            <input
-              type="password"
-              value={password}
-              onChange={({ target }) => setPassword(target.value)}
-            />
-          </label>
-        </div>
-        <button type="submit">login</button>
-      </form>
-    </>
-  )
-
   /////////////////////////////// LOGIN THINGS
-
+  /*
   const [title, setTitle] = useState('') 
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
@@ -110,15 +64,6 @@ const App = () => {
     }
     
   }
-
-  const blogList = () => (
-    <div>
-      <h2>blogs</h2>
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
-      )}
-    </div>
-  )
 
   const createBlog = () => (
     <div>
@@ -158,6 +103,16 @@ const App = () => {
       </form>
     </div>
   )
+  */
+
+  const blogList = () => (
+    <div>
+      <h2>blogs</h2>
+      {blogs.map(blog =>
+        <Blog key={blog.id} blog={blog} />
+      )}
+    </div>
+  )
 
   useEffect(() => {
     blogService.getAll().then(blogs => {
@@ -169,17 +124,15 @@ const App = () => {
     <>
       <Notif message={notifMessage} />
       <Error message={errorMessage} />
-      {!user && loginForm()}
-      <div>
+      {!user && <LoginForm setUser={setUser} setErrorMessage={setErrorMessage} setToken={blogService.setToken} />}
       {user && (
         <div>
           <p>{user.name} logged in</p>
           <button onClick={handleLogOut}>logout</button>
-          {createBlog()}
+          <CreateBlogForm blogs={blogs} setBlogs={setBlogs} setNotifMessage={setNotifMessage} setErrorMessage={setErrorMessage} />
           {blogList()}
         </div>
       )}
-      </div>
     </>
   )
 }
