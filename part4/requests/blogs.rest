@@ -24,13 +24,26 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Imtlb
 ###
 POST http://localhost:3003/api/blogs
 content-type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImtlbiIsImlkIjoiNjk1NGEyNTIxZTg4ZGFiMTBlNTJlMjZlIiwiaWF0IjoxNzY3MTU0MjcxfQ.9b7lhh_84loPvMuZM0Mu7zXDzHGq_UMUBBCrZiouSxc
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJlbiIsImlkIjoiNjk1OWYxOGMwNWM2MTYyOTQwNWE4OWIxIiwiaWF0IjoxNzY3NTk0ODk1fQ.jnJ3UXvG9yOSG0nYrMlGjX7iUuPm8IaMS43VJR6gQps
 
 {
     "title": "Frisey",
     "author": "Freight",
     "url": "www.frisey.com",
     "likes": 23
+}
+
+###
+PUT http://localhost:3003/api/blogs/695b5bb4f39b6956e919444c
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJlbiIsImlkIjoiNjk1OWYxOGMwNWM2MTYyOTQwNWE4OWIxIiwiaWF0IjoxNzY3NTk0ODk1fQ.jnJ3UXvG9yOSG0nYrMlGjX7iUuPm8IaMS43VJR6gQps
+
+{
+    "title": "Frisey",
+    "author": "Freight",
+    "url": "www.frisey.com",
+    "likes": 27,
+    "user": "6959f18c05c61629405a89b1"
 }
 ###
 

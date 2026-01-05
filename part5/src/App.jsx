@@ -4,6 +4,7 @@ import Notif from './components/Notif'
 import Error from './components/Error'
 import LoginForm from './components/LoginForm'
 import CreateBlogForm from './components/CreateBlogForm'
+import Toggle from './components/Toggle'
 import blogService from './services/blogs'
 
 const App = () => {
@@ -11,16 +12,23 @@ const App = () => {
   const [notifMessage, setNotifMessage] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
   const [blogs, setBlogs] = useState([])
-
   const [user, setUser] = useState(null)
-  
-  /////////////////////////////// LOGIN THINGS
-  
 
   const handleLogOut = async (event) => {
     event.preventDefault()
     window.localStorage.removeItem('blogsAppUser')
     setUser(null)
+  }
+
+  const addNewBlog = createdBlog => {
+    setBlogs(blogs.concat(createdBlog))
+    console.log(blogs)
+  }
+
+  const updateBlogOnLike = updatedBlog => {
+    setBlogs(blogs.map(blog => blog.id === updatedBlog.id ? {...blog, likes: updatedBlog.likes}
+                                                          : blog))
+    //console.log(blogs)
   }
 
   useEffect(() => {
@@ -32,84 +40,11 @@ const App = () => {
     }
   }, [])
 
-  /////////////////////////////// LOGIN THINGS
-  /*
-  const [title, setTitle] = useState('') 
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
-
-  const handleCreate = async event => {
-    event.preventDefault()
-    
-    const newBlog = {
-      title: title,
-      author: author,
-      url: url
-    }
-
-    try {
-      const createdBlog = await blogService.createNew(newBlog)
-      setBlogs(blogs.concat(createdBlog))
-      //console.log(blogs)
-      
-      setNotifMessage(`a new blog ${title} by ${author}`)
-      setTimeout(() => {
-        setNotifMessage(null)
-      }, 5000)
-    } catch {
-      setErrorMessage('wrong credentials')
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
-    }
-    
-  }
-
-  const createBlog = () => (
-    <div>
-      <h2>create new</h2>
-      <form onSubmit={handleCreate}>
-        <div>
-          <label>
-            title
-            <input
-              type="text"
-              value={title}
-              onChange={({ target }) => setTitle(target.value)}
-            />
-          </label>
-        </div>
-        <div>
-          <label>
-            author
-            <input
-              type="text"
-              value={author}
-              onChange={({ target }) => setAuthor(target.value)}
-            />
-          </label>
-        </div>
-        <div>
-          <label>
-            url
-            <input
-              type="text"
-              value={url}
-              onChange={({ target }) => setUrl(target.value)}
-            />
-          </label>
-        </div>
-        <button type="submit">create</button>
-      </form>
-    </div>
-  )
-  */
-
   const blogList = () => (
     <div>
       <h2>blogs</h2>
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} updateBlogOnLike={updateBlogOnLike} />
       )}
     </div>
   )
@@ -117,6 +52,7 @@ const App = () => {
   useEffect(() => {
     blogService.getAll().then(blogs => {
       setBlogs(blogs)
+      console.log(blogs)
     })
   }, [])
 
@@ -129,7 +65,9 @@ const App = () => {
         <div>
           <p>{user.name} logged in</p>
           <button onClick={handleLogOut}>logout</button>
-          <CreateBlogForm blogs={blogs} setBlogs={setBlogs} setNotifMessage={setNotifMessage} setErrorMessage={setErrorMessage} />
+          <Toggle buttonLabel='create new blog'>
+            <CreateBlogForm handleUpdateBlogs={addNewBlog} setNotifMessage={setNotifMessage} setErrorMessage={setErrorMessage} />
+          </Toggle>
           {blogList()}
         </div>
       )}

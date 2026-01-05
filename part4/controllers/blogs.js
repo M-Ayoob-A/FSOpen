@@ -25,7 +25,8 @@ blogsRouter.post('/', middleware.userExtractor, async (request, response) => {
   const newBlog = await blog.save()
   user.blogs = user.blogs.concat(newBlog._id)
   await user.save()
-  response.status(201).json(newBlog)
+  blogWithUserDetails = await newBlog.populate('user')
+  response.status(201).json(blogWithUserDetails)
 })
 
 blogsRouter.delete('/:id', middleware.userExtractor, async (request, response) => {
@@ -34,7 +35,10 @@ blogsRouter.delete('/:id', middleware.userExtractor, async (request, response) =
   const blog = await Blog.findById(request.params.id)
   if (!blog) {
     response.status(400).json({ error: 'Invalid blog id' })
-  } else if (blog.user.toString() === user._id.toString()) {
+  } 
+   // check if the client issuing the delete operation is the same as the one
+   // who initialy added the blog post
+  else if (blog.user.toString() === user._id.toString()) {
     await Blog.findByIdAndDelete(request.params.id)
     user.blogs = user.blogs.filter(b => b.toString() !== request.params.id)
     await user.save()
@@ -44,18 +48,33 @@ blogsRouter.delete('/:id', middleware.userExtractor, async (request, response) =
   }
 })
 
-blogsRouter.put('/:id', async (request, response, next) => {
-  const { title, author, url, likes } = request.body
+blogsRouter.put('/:id', middleware.userExtractor, async (request, response, next) => {
+  const blogUpdates = request.body
+  //const user = request.user
+  //console.log(user)
+  // check if the client issuing the delete operation is the same as the one
+  // who initialy added the blog post
+  /*if (blogUpdates.user.toString() !== user._id.toString()) {
+    response.status(401).json({ error: 'Unauthorised update operation' })
+    return
+  }*/
 
   let toChange = await Blog.findById(request.params.id)
-  console.log(toChange)
-  toChange.title = title
-  toChange.author = author
-  toChange.url = url
-  toChange.likes = likes
 
-  const updatedBlog = await toChange.save()
-  response.json(updatedBlog)
+  if (!toChange) {
+    response.status(400).json({ error: 'Invalid blog id' })
+  } else {
+    console.log(toChange)
+
+    //toChange.title = blogUpdates.title
+    //toChange.author = blogUpdates.author
+    //toChange.url = blogUpdates.url
+    toChange.likes = blogUpdates.likes
+
+    const updatedBlog = await toChange.save()
+    response.json(updatedBlog)
+  }
+
 })
 
 module.exports = blogsRouter

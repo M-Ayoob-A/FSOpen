@@ -27,8 +27,10 @@ const userExtractor = async (request, response, next) => {
     
   const decodedToken = jwt.verify(token, process.env.SECRET)
   if (!decodedToken.id) {
+    console.log("Error case for token")
     return response.status(401).json({ error: 'token invalid' })
   }
+  console.log("Got past")
   request.user = await User.findById(decodedToken.id)
   next()
 }
