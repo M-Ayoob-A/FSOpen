@@ -25,11 +25,26 @@ const App = () => {
     console.log(blogs)
   }
 
-  const updateBlogOnLike = updatedBlog => {
-    setBlogs(blogs.map(blog => blog.id === updatedBlog.id ? {...blog, likes: updatedBlog.likes}
-                                                          : blog))
-    //console.log(blogs)
+  const setBlogsAfterSort = newBlogs => {
+    setBlogs(newBlogs.sort((b1, b2) => b2.likes - b1.likes))
   }
+
+  const updateBlogOnLike = updatedBlog => {
+    setBlogsAfterSort(blogs.map(blog => blog.id === updatedBlog.id ? {...blog, likes: updatedBlog.likes} : blog))
+  }
+
+  const updateBlogsOnDelete = id => {
+    setBlogs(blogs.filter(b => b.id !== id))
+  }
+
+  const handleDelete = idOfBlogToDelete => {
+    try {
+      blogService.deleteBlog(idOfBlogToDelete)
+      updateBlogsOnDelete(idOfBlogToDelete)
+    } catch (err) {
+      console.log(err)
+    }
+  } 
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('blogsAppUser')
@@ -38,23 +53,21 @@ const App = () => {
       setUser(user)
       blogService.setToken(user.token)
     }
+
+    blogService.getAll().then(blogs => {
+      setBlogsAfterSort(blogs)
+      //console.log(blogs)
+    })
   }, [])
 
   const blogList = () => (
     <div>
       <h2>blogs</h2>
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} updateBlogOnLike={updateBlogOnLike} />
+        <Blog key={blog.id} blog={blog} updateBlogOnLike={updateBlogOnLike} byUser={blog.user.id === user.id} handleDeleteParent={handleDelete} />
       )}
     </div>
   )
-
-  useEffect(() => {
-    blogService.getAll().then(blogs => {
-      setBlogs(blogs)
-      console.log(blogs)
-    })
-  }, [])
 
   return (
     <>
