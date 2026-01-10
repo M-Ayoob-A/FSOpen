@@ -23,6 +23,8 @@ const CreateBlogForm = ({ handleUpdateBlogs, setNotifMessage, setErrorMessage })
       setTimeout(() => {
         setNotifMessage(null)
       }, 5000)
+      
+      //handleUpdateBlogs(newBlog)
     } catch (error) {
       setErrorMessage('wrong credentials')
       setTimeout(() => {
