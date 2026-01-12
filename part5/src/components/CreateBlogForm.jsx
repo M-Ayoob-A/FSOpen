@@ -1,7 +1,6 @@
 import { useState } from "react"
-import blogService from '../services/blogs'
 
-const CreateBlogForm = ({ handleUpdateBlogs, setNotifMessage, setErrorMessage }) => {
+const CreateBlogForm = ({ handleUpdateBlogs }) => {
   
   const [title, setTitle] = useState('') 
   const [author, setAuthor] = useState('')
@@ -16,22 +15,7 @@ const CreateBlogForm = ({ handleUpdateBlogs, setNotifMessage, setErrorMessage })
       url: url
     }
 
-    try {
-      const createdBlog = await blogService.createNew(newBlog)
-      handleUpdateBlogs(createdBlog)
-      setNotifMessage(`a new blog ${title} by ${author}`)
-      setTimeout(() => {
-        setNotifMessage(null)
-      }, 5000)
-      
-      //handleUpdateBlogs(newBlog)
-    } catch (error) {
-      setErrorMessage('wrong credentials')
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
-    }
-    
+    handleUpdateBlogs(newBlog)
   }
 
 

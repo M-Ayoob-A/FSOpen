@@ -1,5 +1,4 @@
 import { useState } from "react"
-import blogService from '../services/blogs'
 
 const Blog = ({ blog, updateBlogOnLike, byUser, handleDeleteParent }) => {
   
@@ -10,7 +9,6 @@ const Blog = ({ blog, updateBlogOnLike, byUser, handleDeleteParent }) => {
   const handleLike = () => {
     setLikes(likes + 1)
     const updatedBlog = {...blog, likes: likes + 1, user: blog.user.id}
-    blogService.updateBlog(updatedBlog)
     // Should this be in a .then? Currently, no - no need to wait for the response
     updateBlogOnLike(updatedBlog)
   }

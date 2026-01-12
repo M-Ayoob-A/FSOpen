@@ -86,11 +86,9 @@ test('submitting the create blog form calls the relevant event handler', async (
   
   
   const createBlogHandlerMock = vi.fn()
-  const otherMock1 = vi.fn()
-  const otherMock2 = vi.fn()
 
   render(
-    <CreateBlogForm handleUpdateBlogs={createBlogHandlerMock} setNotifMessage={otherMock1} setErrorMessage={otherMock2} />
+    <CreateBlogForm handleUpdateBlogs={createBlogHandlerMock} />
   )
 
   const user = userEvent.setup()

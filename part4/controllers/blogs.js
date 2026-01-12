@@ -64,7 +64,7 @@ blogsRouter.put('/:id', middleware.userExtractor, async (request, response, next
   if (!toChange) {
     response.status(400).json({ error: 'Invalid blog id' })
   } else {
-    console.log(toChange)
+    //console.log(toChange)
 
     //toChange.title = blogUpdates.title
     //toChange.author = blogUpdates.author

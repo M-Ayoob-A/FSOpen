@@ -5,6 +5,7 @@ import Error from './components/Error'
 import LoginForm from './components/LoginForm'
 import CreateBlogForm from './components/CreateBlogForm'
 import Toggle from './components/Toggle'
+import BlogList from './components/BlogList'
 import blogService from './services/blogs'
 
 const App = () => {
@@ -20,9 +21,20 @@ const App = () => {
     setUser(null)
   }
 
-  const addNewBlog = createdBlog => {
-    setBlogs(blogs.concat(createdBlog))
-    console.log(blogs)
+  const addNewBlog = async newBlog => {
+    try {
+      const createdBlog = await blogService.createNew(newBlog)
+      setBlogs(blogs.concat(createdBlog))
+      setNotifMessage(`a new blog ${createdBlog.title} by ${createdBlog.author}`)
+      setTimeout(() => {
+        setNotifMessage(null)
+      }, 5000)
+    } catch (error) {
+      setErrorMessage('wrong credentials')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+    }
   }
 
   const setBlogsAfterSort = newBlogs => {
@@ -30,6 +42,7 @@ const App = () => {
   }
 
   const updateBlogOnLike = updatedBlog => {
+    blogService.updateBlog(updatedBlog)
     setBlogsAfterSort(blogs.map(blog => blog.id === updatedBlog.id ? {...blog, likes: updatedBlog.likes} : blog))
   }
 
@@ -56,7 +69,6 @@ const App = () => {
 
     blogService.getAll().then(blogs => {
       setBlogsAfterSort(blogs)
-      //console.log(blogs)
     })
   }, [])
 
@@ -79,7 +91,7 @@ const App = () => {
           <p>{user.name} logged in</p>
           <button onClick={handleLogOut}>logout</button>
           <Toggle buttonLabel='create new blog'>
-            <CreateBlogForm handleUpdateBlogs={addNewBlog} setNotifMessage={setNotifMessage} setErrorMessage={setErrorMessage} />
+            <CreateBlogForm handleUpdateBlogs={addNewBlog} />
           </Toggle>
           {blogList()}
         </div>
