@@ -11,7 +11,7 @@ test('renders blog content correctly', () => {
     url: 'www.blog.com',
     likes: 24,
     user : {
-      name: 'name1', 
+      name: 'name1',
       id: '28765nryd8o4y12jos41o2j',
       username: 'username1'
     }
@@ -35,12 +35,12 @@ test('clicking the view button reveals url and likes', async () => {
     url: 'www.blog.com',
     likes: 24,
     user : {
-      name: 'name1', 
+      name: 'name1',
       id: '28765nryd8o4y12jos41o2j',
       username: 'username1'
     }
   }
-  
+
   render(
     <Blog blog={blog} byUser={true} />
   )
@@ -60,12 +60,12 @@ test('clicking the like button calls the relevant event handler', async () => {
     url: 'www.blog.com',
     likes: 24,
     user : {
-      name: 'name1', 
+      name: 'name1',
       id: '28765nryd8o4y12jos41o2j',
       username: 'username1'
     }
   }
-  
+
   const likesMockHandler = vi.fn()
 
   render(
@@ -83,8 +83,7 @@ test('clicking the like button calls the relevant event handler', async () => {
 })
 
 test('submitting the create blog form calls the relevant event handler', async () => {
-  
-  
+
   const createBlogHandlerMock = vi.fn()
 
   render(

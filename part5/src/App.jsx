@@ -9,7 +9,7 @@ import BlogList from './components/BlogList'
 import blogService from './services/blogs'
 
 const App = () => {
-  
+
   const [notifMessage, setNotifMessage] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
   const [blogs, setBlogs] = useState([])
@@ -29,7 +29,7 @@ const App = () => {
       setTimeout(() => {
         setNotifMessage(null)
       }, 5000)
-    } catch (error) {
+    } catch {
       setErrorMessage('wrong credentials')
       setTimeout(() => {
         setErrorMessage(null)
@@ -43,7 +43,7 @@ const App = () => {
 
   const updateBlogOnLike = updatedBlog => {
     blogService.updateBlog(updatedBlog)
-    setBlogsAfterSort(blogs.map(blog => blog.id === updatedBlog.id ? {...blog, likes: updatedBlog.likes} : blog))
+    setBlogsAfterSort(blogs.map(blog => blog.id === updatedBlog.id ? { ...blog, likes: updatedBlog.likes } : blog))
   }
 
   const updateBlogsOnDelete = id => {
@@ -57,7 +57,7 @@ const App = () => {
     } catch (err) {
       console.log(err)
     }
-  } 
+  }
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('blogsAppUser')

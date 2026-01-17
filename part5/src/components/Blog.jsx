@@ -1,14 +1,14 @@
-import { useState } from "react"
+import { useState } from 'react'
 
 const Blog = ({ blog, updateBlogOnLike, byUser, handleDeleteParent }) => {
-  
+
   const [viewDetails, setViewDetails] = useState(false)
   const [likes, setLikes] = useState(blog.likes)
 
 
   const handleLike = () => {
     setLikes(likes + 1)
-    const updatedBlog = {...blog, likes: likes + 1, user: blog.user.id}
+    const updatedBlog = { ...blog, likes: likes + 1, user: blog.user.id }
     // Should this be in a .then? Currently, no - no need to wait for the response
     updateBlogOnLike(updatedBlog)
   }
@@ -42,7 +42,7 @@ const Blog = ({ blog, updateBlogOnLike, byUser, handleDeleteParent }) => {
             </button>
           </div>
           <div>{blog.user.name}</div>
-          {byUser && 
+          {byUser &&
           <div>
             <button onClick={handleDelete} >
               delete
@@ -50,7 +50,7 @@ const Blog = ({ blog, updateBlogOnLike, byUser, handleDeleteParent }) => {
           </div>}
         </div>
       }
-    </div>  
+    </div>
   )
 }
 export default Blog
