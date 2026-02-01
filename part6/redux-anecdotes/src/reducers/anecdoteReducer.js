@@ -35,8 +35,6 @@ export const newAnecdoteActionCreator = anecdote => {
 
 
 const reducer = (state = initialState, action) => {
-  console.log('state now: ', state)
-  console.log('action', action)
 
   switch (action.type) {
     case 'VOTE':
@@ -52,15 +50,6 @@ const reducer = (state = initialState, action) => {
       })
     case 'NEW':
       return state.concat(action.payload)
-    /*case 'BAD':
-      return {
-        good: state.good,
-        ok: state.ok,
-        bad: state.bad + 1,
-      }
-    case 'RESET':
-      return initialState
-    */
     default:
       return state
   }
