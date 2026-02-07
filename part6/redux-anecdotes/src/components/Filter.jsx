@@ -1,13 +1,12 @@
 import { useDispatch } from "react-redux"
-import { filterActionCreator } from "../reducers/filterReducer"
+import { changeFilter } from "../reducers/filterReducer"
 
 const Filter = () => {
   
   const dispatch = useDispatch()
   
   const handleChange = (event) => {
-    // input-field value is in variable event.target.value
-    dispatch(filterActionCreator(event.target.value))
+    dispatch(changeFilter(event.target.value))
   }
   
   const style = {
