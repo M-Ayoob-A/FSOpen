@@ -26,4 +26,25 @@ const createNew = async newAnecdote => {
   return await response.json()
 }
 
-export default { getAll, createNew }
+const vote = async (id) => {
+  const anecdoteUrl = baseUrl + '/' + id
+  
+  const fetchResponse = await fetch(anecdoteUrl)
+  const anecdoteToVote = await fetchResponse.json()
+  
+  const options = {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ votes: anecdoteToVote.votes + 1 })
+  }
+  
+  const response = await fetch(anecdoteUrl, options)
+
+   if (!response.ok) {
+    throw new Error('Failed to create new anecdote')
+  }
+
+  return await response.json()
+}
+
+export default { getAll, createNew, vote }
