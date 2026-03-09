@@ -8,32 +8,14 @@ const Blog = ({ blog, updateBlogOnLike, byUser, handleDeleteParent }) => {
 
   const dispatch = useDispatch()
 
-  // Can be reduced to a single dispatch call
   const handleLike = () => {
-    setLikes(likes + 1); // May need this even with redux
+    setLikes(likes + 1);
     const updatedBlog = { ...blog, likes: likes + 1, user: blog.user.id };
-    // Should this be in a .then? Currently, no - no need to wait for the response
-    //updateBlogOnLike(updatedBlog);
     dispatch(likeBlog(updatedBlog));
   };
 
-  /*const updateBlogOnLike = (updatedBlog) => {
-    
-    setBlogsAfterSort(
-      blogs.map((blog) =>
-        blog.id === updatedBlog.id
-          ? { ...blog, likes: updatedBlog.likes }
-          : blog,
-      ),
-    );
-  };*/
-
-
-
-  // Replace hDP call with dispatch
   const handleDelete = () => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-      //handleDeleteParent(blog.id);
       try {
         dispatch(removeBlog(blog.id));        
       } catch (err) {

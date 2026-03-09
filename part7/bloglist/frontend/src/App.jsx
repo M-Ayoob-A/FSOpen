@@ -8,11 +8,9 @@ import BlogList from "./components/BlogList";
 import blogService from "./services/blogs";
 
 import { useSelector, useDispatch } from "react-redux";
-import { triggerNotification } from "./reducers/notifReducer";
-import { initialiseBlogs, createBlog } from "./reducers/blogReducer";
+import { initialiseBlogs } from "./reducers/blogReducer";
 
 const App = () => {
-  const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
 
   const dispatch = useDispatch();
@@ -25,48 +23,6 @@ const App = () => {
     setUser(null);
   };
 
-  // CREATE FUNCTION (moved to createblogform)
-  /*const addNewBlog = async (newBlog) => {
-    try {
-      const createdBlog = await blogService.createNew(newBlog);
-      setBlogs(blogs.concat(createdBlog));
-      dispatch(createBlog(createdBlog))
-      dispatch(triggerNotification(`a new blog ${createdBlog.title} by ${createdBlog.author}`, false))
-    } catch {
-      dispatch(triggerNotification("wrong credentials", true))
-    }
-  };*/
-
-  const setBlogsAfterSort = (newBlogs) => {
-    setBlogs(newBlogs.sort((b1, b2) => b2.likes - b1.likes));
-  };
-
-  // Won't need this one - can dispatch from Blog component
-  const updateBlogOnLike = (updatedBlog) => {
-    blogService.updateBlog(updatedBlog);
-    setBlogsAfterSort(
-      blogs.map((blog) =>
-        blog.id === updatedBlog.id
-          ? { ...blog, likes: updatedBlog.likes }
-          : blog,
-      ),
-    );
-  };
-
-  /*const updateBlogsOnDelete = (id) => {
-    setBlogs(blogs.filter((b) => b.id !== id));
-  };*/
-
-  // DELETE FUNCTION (w helper above)
-  /*const handleDelete = (idOfBlogToDelete) => {
-    try {
-      blogService.deleteBlog(idOfBlogToDelete);
-      updateBlogsOnDelete(idOfBlogToDelete);
-    } catch (err) {
-      console.log(err);
-    }
-  };*/
-
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("blogsAppUser");
     if (loggedUserJSON) {
@@ -75,9 +31,6 @@ const App = () => {
       blogService.setToken(user.token);
     }
 
-    /*blogService.getAll().then((blogs) => {
-      setBlogsAfterSort(blogs);
-    });*/
     dispatch(initialiseBlogs())
   }, []);
 
@@ -88,9 +41,7 @@ const App = () => {
         <Blog
           key={blog.id}
           blog={blog}
-          updateBlogOnLike={updateBlogOnLike}
           byUser={blog.user.id === user.id}
-          //handleDeleteParent={handleDelete}
         />
       ))}
     </div>

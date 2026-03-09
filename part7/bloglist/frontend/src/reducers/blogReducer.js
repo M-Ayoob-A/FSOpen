@@ -51,7 +51,6 @@ export const initialiseBlogs = () => {
   };
 };
 
-// Deal with this later
 export const likeBlog = (blog) => {
   return async (dispatch) => {
     await blogService.updateBlog(blog);
