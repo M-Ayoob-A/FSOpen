@@ -1,5 +1,4 @@
-import { useState, useEffect } from "react";
-import Blog from "./components/Blog";
+import { useEffect } from "react";
 import Notif from "./components/Notif";
 import LoginForm from "./components/LoginForm";
 import CreateBlogForm from "./components/CreateBlogForm";
@@ -9,61 +8,43 @@ import blogService from "./services/blogs";
 
 import { useSelector, useDispatch } from "react-redux";
 import { initialiseBlogs } from "./reducers/blogReducer";
+import { setUserRedux, removeUser } from "./reducers/userReducer";
 
 const App = () => {
-  const [user, setUser] = useState(null);
-
   const dispatch = useDispatch();
-  const reduxBlogs = useSelector(state => state.blogs)
-  console.log(reduxBlogs)
+  const reduxBlogs = useSelector((state) => state.blogs);
+  const reduxUser = useSelector((state) => state.user);
 
   const handleLogOut = async (event) => {
     event.preventDefault();
     window.localStorage.removeItem("blogsAppUser");
-    setUser(null);
+    dispatch(removeUser());
   };
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("blogsAppUser");
     if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON);
-      setUser(user);
-      blogService.setToken(user.token);
+      const storedUser = JSON.parse(loggedUserJSON);
+      dispatch(setUserRedux(storedUser));
+      blogService.setToken(storedUser.token);
     }
 
-    dispatch(initialiseBlogs())
+    dispatch(initialiseBlogs());
   }, []);
-
-  const blogList = () => (
-    <div>
-      <h2>blogs</h2>
-      {reduxBlogs.map((blog) => (
-        <Blog
-          key={blog.id}
-          blog={blog}
-          byUser={blog.user.id === user.id}
-        />
-      ))}
-    </div>
-  );
 
   return (
     <>
       <Notif />
-      {!user && (
-        <LoginForm
-          setUser={setUser}
-          setToken={blogService.setToken}
-        />
-      )}
-      {user && (
+      {!reduxUser ? (
+        <LoginForm setToken={blogService.setToken} />
+      ) : (
         <div>
-          <p>{user.name} logged in</p>
+          <p>{reduxUser.name} logged in</p>
           <button onClick={handleLogOut}>logout</button>
           <Toggle buttonLabel="create new blog">
             <CreateBlogForm />
           </Toggle>
-          {blogList()}
+          <BlogList blogs={reduxBlogs} userId={reduxUser.id} />
         </div>
       )}
     </>

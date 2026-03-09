@@ -1,6 +1,7 @@
 import Blog from "./Blog";
 
-const BlogList = (blogs, updateBlogOnLike, handleDelete, user) => {
+const BlogList = ({ blogs, userId }) => {
+  
   return (
     <>
       {blogs.length ? (
@@ -10,9 +11,7 @@ const BlogList = (blogs, updateBlogOnLike, handleDelete, user) => {
             <Blog
               key={blog.id}
               blog={blog}
-              updateBlogOnLike={updateBlogOnLike}
-              byUser={blog.user.id === user.id}
-              handleDeleteParent={handleDelete}
+              byUser={blog.user.id === userId}
             />
           ))}
         </div>
