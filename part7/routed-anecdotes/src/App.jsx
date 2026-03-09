@@ -1,6 +1,7 @@
-import { use } from 'react'
+/* eslint-disable react/prop-types */
 import { useState } from 'react'
 import { Routes, Route, Link, useMatch, useNavigate } from 'react-router-dom'
+import { useInputField } from './hooks/index.js'
 
 const Menu = () => {
   const padding = {
@@ -59,19 +60,25 @@ const Footer = () => (
 )
 
 const CreateNew = (props) => {
-  const [content, setContent] = useState('')
-  const [author, setAuthor] = useState('')
-  const [info, setInfo] = useState('')
-
+  
+  const content = useInputField('content')
+  const author = useInputField('author')
+  const info = useInputField('info')
 
   const handleSubmit = (e) => {
     e.preventDefault()
     props.addNew({
-      content,
-      author,
-      info,
+      content: content.value,
+      author: author.value,
+      info: info.value,
       votes: 0
     })
+  }
+
+  const reset = () => {
+    content.reset()
+    author.reset()
+    info.reset()
   }
 
   return (
@@ -80,18 +87,19 @@ const CreateNew = (props) => {
       <form onSubmit={handleSubmit}>
         <div>
           content
-          <input name='content' value={content} onChange={(e) => setContent(e.target.value)} />
+          <input {...content.fieldParams} />
         </div>
         <div>
           author
-          <input name='author' value={author} onChange={(e) => setAuthor(e.target.value)} />
+          <input {...author.fieldParams} />
         </div>
         <div>
           url for more info
-          <input name='info' value={info} onChange={(e)=> setInfo(e.target.value)} />
+          <input {...info.fieldParams} />
         </div>
         <button>create</button>
       </form>
+      <button onClick={reset}>reset</button>
     </div>
   )
 
@@ -127,6 +135,7 @@ const App = () => {
   }
 
   const addNew = (anecdote) => {
+    console.log(anecdote)
     anecdote.id = Math.round(Math.random() * 10000)
     setAnecdotes(anecdotes.concat(anecdote))
     showNotification(`a new anecdote ${anecdote.content} created!`)
@@ -136,7 +145,7 @@ const App = () => {
   const anecdoteById = (id) =>
     anecdotes.find(a => a.id === id)
 
-  const vote = (id) => {
+  /*const vote = (id) => {
     const anecdote = anecdoteById(id)
 
     const voted = {
@@ -145,11 +154,11 @@ const App = () => {
     }
 
     setAnecdotes(anecdotes.map(a => a.id === id ? voted : a))
-  }
+  }*/
 
   const match = useMatch('/anecdotes/:id')
   const anecdote = match 
-        ? anecdotes.find(a => a.id === Number(match.params.id))
+        ? anecdoteById(Number(match.params.id))
         : null
 
   return (
