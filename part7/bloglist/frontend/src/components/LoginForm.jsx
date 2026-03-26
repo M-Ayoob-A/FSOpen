@@ -1,31 +1,30 @@
-import { useState } from 'react'
-import loginService from '../services/login'
+import { useState } from "react";
+import loginService from "../services/login";
 
 import { useDispatch } from "react-redux";
 import { triggerNotification } from "../reducers/notifReducer";
-import { setUserRedux } from '../reducers/userReducer';
-
+import { setUserRedux } from "../reducers/userReducer";
 
 const LoginForm = ({ setToken }) => {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   const handleLogin = async (event) => {
-    event.preventDefault()
+    event.preventDefault();
 
     try {
-      const user = await loginService.login({ username, password })
-      window.localStorage.setItem('blogsAppUser', JSON.stringify(user))
-      setToken(user.token)
-      dispatch(setUserRedux(user))
-      setUsername('')
-      setPassword('')
+      const user = await loginService.login({ username, password });
+      window.localStorage.setItem("blogsAppUser", JSON.stringify(user));
+      setToken(user.token);
+      dispatch(setUserRedux(user));
+      setUsername("");
+      setPassword("");
     } catch {
-      dispatch(triggerNotification('wrong username or password', true))
+      dispatch(triggerNotification("wrong username or password", true));
     }
-  }
+  };
 
   return (
     <>
@@ -54,7 +53,7 @@ const LoginForm = ({ setToken }) => {
         <button type="submit">login</button>
       </form>
     </>
-  )
-}
+  );
+};
 
-export default LoginForm
+export default LoginForm;

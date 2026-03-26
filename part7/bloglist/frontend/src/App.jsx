@@ -34,6 +34,7 @@ const App = () => {
 
   return (
     <>
+      <h2>blogs</h2>
       <Notif />
       {!reduxUser ? (
         <LoginForm setToken={blogService.setToken} />

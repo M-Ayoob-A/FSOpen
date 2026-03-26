@@ -1,33 +1,37 @@
-import { useState } from 'react'
-import { useDispatch } from 'react-redux'
-import { createBlog } from '../reducers/blogReducer'
-import { triggerNotification } from '../reducers/notifReducer'
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { createBlog } from "../reducers/blogReducer";
+import { triggerNotification } from "../reducers/notifReducer";
 
 const CreateBlogForm = () => {
+  const [title, setTitle] = useState("");
+  const [author, setAuthor] = useState("");
+  const [url, setUrl] = useState("");
 
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
+  const dispatch = useDispatch();
 
-  const dispatch = useDispatch()
-
-  const handleCreate = async event => {
-    event.preventDefault()
+  const handleCreate = async (event) => {
+    event.preventDefault();
 
     const newBlog = {
       title: title,
       author: author,
-      url: url
-    }
+      url: url,
+    };
 
     try {
-      dispatch(createBlog(newBlog))
-      dispatch(triggerNotification(`a new blog ${newBlog.title} by ${newBlog.author}`, false))
+      dispatch(createBlog(newBlog));
+      dispatch(
+        triggerNotification(
+          `a new blog ${newBlog.title} by ${newBlog.author}`,
+          false,
+        ),
+      );
     } catch (e) {
-      console.log(e)
-      dispatch(triggerNotification("wrong credentials", true))
+      console.log(e);
+      dispatch(triggerNotification("wrong credentials", true));
     }
-  }
+  };
 
   return (
     <div>
@@ -66,7 +70,7 @@ const CreateBlogForm = () => {
         <button type="submit">create</button>
       </form>
     </div>
-  )
-}
+  );
+};
 
-export default CreateBlogForm
+export default CreateBlogForm;

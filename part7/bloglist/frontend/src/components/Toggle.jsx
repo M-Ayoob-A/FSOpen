@@ -1,26 +1,26 @@
-import { useState } from 'react'
+import { useState } from "react";
 
 const Toggle = (props) => {
-  const [visible, setVisible] = useState(false)
+  const [visible, setVisible] = useState(false);
 
-  const hideWhenVisible = { display: visible ? 'none' : '' }
-  const showWhenVisible = { display: visible ? '' : 'none' }
+  const hideWhenVisible = { display: visible ? "none" : "" };
+  const showWhenVisible = { display: visible ? "" : "none" };
 
   const toggleShow = () => {
-    setVisible(!visible)
-  }
+    setVisible(!visible);
+  };
 
   return (
     <>
-      <div style={hideWhenVisible} >
-        <button onClick={toggleShow} >{props.buttonLabel}</button>
+      <div style={hideWhenVisible}>
+        <button onClick={toggleShow}>{props.buttonLabel}</button>
       </div>
-      <div style={showWhenVisible} >
+      <div style={showWhenVisible}>
         {props.children}
-        <button onClick={toggleShow} >cancel</button>
+        <button onClick={toggleShow}>cancel</button>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default Toggle
+export default Toggle;

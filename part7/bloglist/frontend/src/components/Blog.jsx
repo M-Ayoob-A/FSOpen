@@ -5,7 +5,7 @@ import { likeBlog, removeBlog } from "../reducers/blogReducer";
 const Blog = ({ blog, byUser }) => {
   const [viewDetails, setViewDetails] = useState(false);
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   const handleLike = () => {
     const updatedBlog = { ...blog, likes: blog.likes + 1, user: blog.user.id };
@@ -15,7 +15,7 @@ const Blog = ({ blog, byUser }) => {
   const handleDelete = () => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
       try {
-        dispatch(removeBlog(blog.id));        
+        dispatch(removeBlog(blog.id));
       } catch (err) {
         console.log(err);
       }
