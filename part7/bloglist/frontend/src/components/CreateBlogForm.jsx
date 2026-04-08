@@ -17,6 +17,7 @@ const CreateBlogForm = () => {
       title: title,
       author: author,
       url: url,
+      comments: []
     };
 
     try {

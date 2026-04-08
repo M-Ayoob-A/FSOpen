@@ -1,59 +1,70 @@
-import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { likeBlog, removeBlog } from "../reducers/blogReducer";
+import { useNavigate } from "react-router-dom";
+import { likeBlog, removeBlog, commentBlog } from "../reducers/blogReducer";
+import { useState } from "react";
 
-const Blog = ({ blog, byUser }) => {
-  const [viewDetails, setViewDetails] = useState(false);
-
+const Blog = ({ blog, user }) => {
+  
+  const [comment, setComment] = useState("")
+  
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleLike = () => {
     const updatedBlog = { ...blog, likes: blog.likes + 1, user: blog.user.id };
     dispatch(likeBlog(updatedBlog));
   };
 
+  const handleAddComment = () => {
+    dispatch(commentBlog(blog.id, comment))
+    setComment("")
+  }
+
   const handleDelete = () => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
       try {
         dispatch(removeBlog(blog.id));
+        navigate("/");
       } catch (err) {
         console.log(err);
       }
     }
   };
 
+  if (!blog) {
+    return null;
+  }
   return (
-    <div
-      style={{
-        paddingTop: 10,
-        paddingLeft: 2,
-        border: "solid",
-        borderWidth: 1,
-        marginBottom: 5,
-      }}
-    >
-      <div>
+    <>
+      <h2>
         {blog.title} {blog.author}
-        <button onClick={() => setViewDetails(!viewDetails)}>
-          {viewDetails ? "hide" : "view"}
-        </button>
+      </h2>
+      <div>{blog.url}</div>
+      <div>
+        {blog.likes} likes
+        <button onClick={handleLike}>like</button>
       </div>
-      {viewDetails && (
+      <div>added by {blog.user.name}</div>
+      {user && blog.user.id === user.id && (
         <div>
-          <div>{blog.url}</div>
-          <div>
-            likes {blog.likes}
-            <button onClick={handleLike}>like</button>
-          </div>
-          <div>{blog.user.name}</div>
-          {byUser && (
-            <div>
-              <button onClick={handleDelete}>delete</button>
-            </div>
-          )}
+          <button onClick={handleDelete}>delete</button>
         </div>
       )}
-    </div>
+      <h3>comments</h3>
+      <div>
+        <input
+          type="text"
+          value={comment}
+          onChange={({ target }) => setComment(target.value)}
+        />
+        <button onClick={handleAddComment} >add comment</button>
+      </div>
+      <ul>
+        {
+          blog.comments.map(c => <li key={c}>{c}</li>)
+        }
+      </ul>
+    </>
   );
 };
 export default Blog;

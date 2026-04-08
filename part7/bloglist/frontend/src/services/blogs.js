@@ -22,12 +22,12 @@ const createNew = async newBlog => {
   return res.data
 }
 
-const updateBlog = async updatedBlog => {
+const likeBlog = async updatedBlog => {
   const config = {
     headers: { Authorization: token }
   }
 
-  const res = await axios.put(baseUrl + '/' + updatedBlog.id.toString(), updatedBlog, config)
+  const res = await axios.put(baseUrl + '/' + updatedBlog.id.toString() + '/like', { likes: updatedBlog.likes }, config)
   return res.data
 }
 
@@ -40,4 +40,13 @@ const deleteBlog = async blogToDelete => {
   return res.data
 }
 
-export default { getAll, createNew, setToken, updateBlog, deleteBlog }
+const commentBlog = async (id, newComment) => {
+  const config = {
+    headers: { Authorization: token }
+  }
+
+  const res = await axios.put(baseUrl + '/' + id.toString() + '/comment', { comment: newComment }, config)
+  return res.data
+}
+
+export default { getAll, createNew, setToken, likeBlog, deleteBlog, commentBlog }

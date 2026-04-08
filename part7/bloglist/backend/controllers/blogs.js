@@ -48,7 +48,7 @@ blogsRouter.delete('/:id', middleware.userExtractor, async (request, response) =
   }
 })
 
-blogsRouter.put('/:id', middleware.userExtractor, async (request, response, next) => {
+blogsRouter.put('/:id/like', middleware.userExtractor, async (request, response, next) => {
   const blogUpdates = request.body
   //const user = request.user
   //console.log(user)
@@ -70,6 +70,22 @@ blogsRouter.put('/:id', middleware.userExtractor, async (request, response, next
     //toChange.author = blogUpdates.author
     //toChange.url = blogUpdates.url
     toChange.likes = blogUpdates.likes
+
+    const updatedBlog = await toChange.save()
+    response.json(updatedBlog)
+  }
+
+})
+
+blogsRouter.put('/:id/comment', middleware.userExtractor, async (request, response, next) => {
+  const comment = request.body.comment
+
+  let toChange = await Blog.findById(request.params.id)
+
+  if (!toChange) {
+    response.status(400).json({ error: 'Invalid blog id' })
+  } else {
+    toChange.comments.push(comment)
 
     const updatedBlog = await toChange.save()
     response.json(updatedBlog)
