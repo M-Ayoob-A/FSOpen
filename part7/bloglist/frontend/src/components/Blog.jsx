@@ -2,10 +2,19 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { likeBlog, removeBlog, commentBlog } from "../reducers/blogReducer";
 import { useState } from "react";
+import ErrorBoundary from "./ErrorBoundary";
+
+import TextField from '@mui/material/TextField';
+import useField from "../services/fieldHook";
+import Button from '@mui/material/Button';
+import Typography from "@mui/material/Typography";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+
 
 const Blog = ({ blog, user }) => {
   
-  const [comment, setComment] = useState("")
+  const commentField = useField("text")
   
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -16,8 +25,8 @@ const Blog = ({ blog, user }) => {
   };
 
   const handleAddComment = () => {
-    dispatch(commentBlog(blog.id, comment))
-    setComment("")
+    dispatch(commentBlog(blog.id, commentField.value))
+    commentField.clear()
   }
 
   const handleDelete = () => {
@@ -36,34 +45,33 @@ const Blog = ({ blog, user }) => {
   }
   return (
     <>
-      <h2>
-        {blog.title} {blog.author}
-      </h2>
-      <div>{blog.url}</div>
-      <div>
-        {blog.likes} likes
-        <button onClick={handleLike}>like</button>
-      </div>
-      <div>added by {blog.user.name}</div>
-      {user && blog.user.id === user.id && (
+      <ErrorBoundary>
+        
+        <Typography variant="h4" >{blog.title} {blog.author}</Typography>
+
+        <div>{blog.url}</div>
         <div>
-          <button onClick={handleDelete}>delete</button>
+          {blog.likes} likes
+          <Button onClick={handleLike}>like</Button>
         </div>
-      )}
-      <h3>comments</h3>
-      <div>
-        <input
-          type="text"
-          value={comment}
-          onChange={({ target }) => setComment(target.value)}
-        />
-        <button onClick={handleAddComment} >add comment</button>
-      </div>
-      <ul>
-        {
-          blog.comments.map(c => <li key={c}>{c}</li>)
-        }
-      </ul>
+        <div>added by {blog.user.name}</div>
+        {user && blog.user.id === user.id && (
+          <div>
+            <Button onClick={handleDelete} color="error">delete</Button>
+          </div>
+        )}
+        <div style={{ height: '20px' }} ></div>
+        <Typography variant="h4" >Comments</Typography>
+        <div style={{ alignItems: 'center', display: 'flex' }} >
+          <TextField {...commentField.fieldAttrs} />
+          <Button onClick={handleAddComment} >add comment</Button>
+        </div>
+        <List>
+          {blog.comments.map(c => (
+              <ListItem key={c}>{c}</ListItem>
+          ))}
+        </List>
+      </ErrorBoundary>
     </>
   );
 };

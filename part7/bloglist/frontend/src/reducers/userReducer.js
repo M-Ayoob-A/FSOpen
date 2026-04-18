@@ -7,12 +7,12 @@ const userSlice = createSlice({
     setUserRedux(state, action) {
       return action.payload;
     },
-    removeUser(state, action) {
+    removeUserRedux(state, action) {
       return null;
     },
   },
 });
 
-export const { setUserRedux, removeUser } = userSlice.actions;
+export const { setUserRedux, removeUserRedux } = userSlice.actions;
 
 export default userSlice.reducer;

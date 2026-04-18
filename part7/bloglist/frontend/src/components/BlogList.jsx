@@ -1,27 +1,19 @@
 import { Link } from "react-router-dom";
 
+import List from '@mui/material/List';
+import ListItemButton from '@mui/material/ListItemButton';
+
 const BlogList = ({ blogs }) => {
   return (
     <>
       {blogs.length ? (
-        <div>
+        <List>
           {blogs.map((blog) => (
-            <div
-              style={{
-                paddingTop: 10,
-                paddingLeft: 2,
-                border: "solid",
-                borderWidth: 1,
-                marginBottom: 5,
-              }}
-              key={blog.id}
-            >
-              <Link to={`/blogs/${blog.id}`}>
-                {blog.title} {blog.author}
-              </Link>
-            </div>
+              <ListItemButton component={Link} to={`/blogs/${blog.id}`} key={blog.id} >
+                  {blog.title} {blog.author}
+              </ListItemButton>
           ))}
-        </div>
+        </List>
       ) : (
         <div></div>
       )}
@@ -30,3 +22,10 @@ const BlogList = ({ blogs }) => {
 };
 
 export default BlogList;
+/*
+<Link to={`/blogs/${blog.id}`} key={blog.id}>
+              <ListItemButton >
+                  {blog.title} {blog.author}
+              </ListItemButton>
+            </Link>
+*/

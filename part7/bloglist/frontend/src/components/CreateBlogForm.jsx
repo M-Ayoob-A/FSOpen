@@ -3,20 +3,33 @@ import { useDispatch } from "react-redux";
 import { createBlog } from "../reducers/blogReducer";
 import { triggerNotification } from "../reducers/notifReducer";
 
+import TextField from '@mui/material/TextField';
+import useField from "../services/fieldHook";
+import Button from '@mui/material/Button';
+
 const CreateBlogForm = () => {
-  const [title, setTitle] = useState("");
-  const [author, setAuthor] = useState("");
-  const [url, setUrl] = useState("");
+  const authorField = useField("text")
+  const urlField = useField("text")
+  const titleField = useField("text")
 
   const dispatch = useDispatch();
 
   const handleCreate = async (event) => {
     event.preventDefault();
 
+    if (!(titleField.value && authorField.value && urlField.value)) {
+      dispatch(
+        triggerNotification(
+          `please complete all fields`,
+          true,
+        ),
+      );
+    }
+
     const newBlog = {
-      title: title,
-      author: author,
-      url: url,
+      title: titleField.value,
+      author: authorField.value,
+      url: urlField.value,
       comments: []
     };
 
@@ -28,6 +41,9 @@ const CreateBlogForm = () => {
           false,
         ),
       );
+      titleField.clear()
+      authorField.clear()
+      urlField.clear()
     } catch (e) {
       console.log(e);
       dispatch(triggerNotification("wrong credentials", true));
@@ -41,34 +57,22 @@ const CreateBlogForm = () => {
         <div>
           <label>
             title
-            <input
-              type="text"
-              value={title}
-              onChange={({ target }) => setTitle(target.value)}
-            />
+            <TextField {...titleField.fieldAttrs} />
           </label>
         </div>
         <div>
           <label>
             author
-            <input
-              type="text"
-              value={author}
-              onChange={({ target }) => setAuthor(target.value)}
-            />
+            <TextField {...authorField.fieldAttrs} />
           </label>
         </div>
         <div>
           <label>
             url
-            <input
-              type="text"
-              value={url}
-              onChange={({ target }) => setUrl(target.value)}
-            />
+            <TextField {...urlField.fieldAttrs} />
           </label>
         </div>
-        <button type="submit">create</button>
+        <Button variant="outlined" type="submit">Create</Button>
       </form>
     </div>
   );
