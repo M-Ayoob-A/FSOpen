@@ -3,32 +3,33 @@ import { ALL_AUTHORS, EDIT_BIRTHYEAR } from "../queries"
 import { useState } from "react"
 
 const Authors = (props) => {
-  if (!props.show) {
-    return null
-  }
 
-  // eslint-disable-next-line react-hooks/rules-of-hooks
+
   const [name, setName] = useState('')
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const [setBornTo, setYear] = useState('')
+  const [year, setYear] = useState('')
 
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const authors = useQuery(ALL_AUTHORS)
-
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const [editAuth] = useMutation(EDIT_BIRTHYEAR)
+  const [editAuthor] = useMutation(EDIT_BIRTHYEAR, {
+    refetchQueries: [{ query: ALL_AUTHORS }],
+  })
 
   if (authors.loading) {
     return <div>Loading data ...</div> 
   }
 
+
   const onSubmit = (event) => {
     event.preventDefault()
+    if (name !== "select") {
+      const setBornTo = parseInt(year)
+      editAuthor({ variables: {name, setBornTo} })
+      setName('')
+      setYear('')
+    }
+  }
 
-    editAuth({ variables: {name, setBornTo} })
-
-    setName('')
-    setYear('')
+  if (!props.show) {
+    return null
   }
 
   return (
@@ -55,16 +56,21 @@ const Authors = (props) => {
       <form onSubmit={onSubmit} >
         <label>
           author
-          <input
+          <select
             value={name}
             onChange={({ target }) => setName(target.value)}
-          />
+          >
+            <option value="select" >Select an author</option>
+            {authors.data.allAuthors.map((a) => (
+              <option key={a.id} value={a.name} >{a.name}</option>
+            ))}
+          </ select>
         </label>
         <label>
           born
           <input
-            value={setBornTo}
-            onChange={({ target }) => setYear(target.value)}
+            value={year}
+            onChange={({ target }) => setYear(parseInt(target.value))}
           />
         </label>
         <button type="submit">update author</button>
